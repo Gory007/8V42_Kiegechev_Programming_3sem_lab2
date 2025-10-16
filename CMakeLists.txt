@@ -22,6 +22,24 @@ add_definitions(-DVERSION_PROJECT=${GIT_COMMIT_COUNT})
 
 add_executable(lab2 main.cpp)
 
+configure_file(${CMAKE_SOURCE_DIR}/ip_filter.tsv ${CMAKE_CURRENT_BINARY_DIR}/ip_filter.tsv COPYONLY)
+
+enable_testing()
+
+# Проверим, есть ли gtest (если нет — скачиваем автоматически)
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/refs/heads/main.zip
+)
+FetchContent_MakeAvailable(googletest)
+
+add_executable(test_ip_filter tests/test_ip_filter.cpp)
+target_link_libraries(test_ip_filter GTest::gtest_main)
+
+include(GoogleTest)
+gtest_discover_tests(test_ip_filter)
+
 target_include_directories(lab2 PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 set(CPACK_PACKAGE_NAME "lab2")
