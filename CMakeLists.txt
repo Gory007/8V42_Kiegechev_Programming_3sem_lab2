@@ -55,5 +55,7 @@ if(UNIX AND NOT APPLE)
 endif()
 
 install(TARGETS lab2 DESTINATION bin)
+install(FILES ip_filter.tsv DESTINATION bin)
+
 include(CPack)
 
