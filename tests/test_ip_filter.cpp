@@ -5,7 +5,6 @@
 
 using IP = std::array<int,4>;
 
-// функция сортировки для тестов (как в main)
 void sort_ips(std::vector<IP>& ips) {
     std::sort(ips.begin(), ips.end(), [](const IP& a, const IP& b) {
         return a > b;

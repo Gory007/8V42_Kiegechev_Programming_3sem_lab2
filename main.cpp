@@ -1,79 +1,63 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include <string>
-#include <array>
+#include <tuple>
 #include <algorithm>
+#include <cstdio>
 
-using IP = std::array<int, 4>;
+using IP = std::tuple<int, int, int, int>;
 
-// Преобразование IP в строку
 std::string to_string(const IP& ip) {
-    return std::to_string(ip[0]) + '.' + std::to_string(ip[1]) + '.' +
-           std::to_string(ip[2]) + '.' + std::to_string(ip[3]);
+    return std::to_string(std::get<0>(ip)) + "." +
+           std::to_string(std::get<1>(ip)) + "." +
+           std::to_string(std::get<2>(ip)) + "." +
+           std::to_string(std::get<3>(ip));
 }
 
-// Парсинг "a.b.c.d" в массив чисел
-IP parse_ip(const std::string& str) {
-    IP ip{};
-    std::stringstream ss(str);
-    std::string part;
-    for (int i = 0; i < 4; ++i) {
-        std::getline(ss, part, '.');
-        ip[i] = std::stoi(part);
-    }
-    return ip;
+IP parse_ip(const std::string& s) {
+    int a, b, c, d;
+    std::sscanf(s.c_str(), "%d.%d.%d.%d", &a, &b, &c, &d);
+    return {a, b, c, d};
 }
 
 int main() {
     std::ios::sync_with_stdio(false);
     std::cin.tie(nullptr);
 
-    const std::string filename = "ip_filter.tsv";
-    std::ifstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Ошибка: не удалось открыть файл " << filename << '\n';
-        return 1;
-    }
-
+    std::ifstream file("ip_filter.tsv");
     std::vector<IP> ips;
     std::string line;
 
-    // читаем из файла все строки
     while (std::getline(file, line)) {
         if (line.empty()) continue;
-        std::string ip_str = line.substr(0, line.find('\t'));
-        try {
-            ips.push_back(parse_ip(ip_str));
-        } catch (...) {
-            // пропускаем некорректные строки
-        }
+        if (!line.empty() && line.back() == '\r') line.pop_back();
+
+        ips.push_back(parse_ip(line.substr(0, line.find('\t'))));
     }
 
-    // сортировка в обратном порядке
-    std::sort(ips.begin(), ips.end(), [](const IP& a, const IP& b) {
-        return a > b; // std::array поддерживает лексикографическое сравнение
+
+    std::sort(ips.rbegin(), ips.rend());
+
+    std::for_each(ips.begin(), ips.end(), [](const IP& ip){
+        std::cout << to_string(ip) << '\n';
     });
 
-    // вывод всех IP
-    for (const auto& ip : ips)
-        std::cout << to_string(ip) << '\n';
-
-    // 1) первый байт == 1
-    for (const auto& ip : ips)
-        if (ip[0] == 1)
+    std::for_each(ips.begin(), ips.end(), [](const IP& ip){
+        if (std::get<0>(ip) == 1)
             std::cout << to_string(ip) << '\n';
+    });
 
-    // 2) первый == 46, второй == 70
-    for (const auto& ip : ips)
-        if (ip[0] == 46 && ip[1] == 70)
+    std::for_each(ips.begin(), ips.end(), [](const IP& ip){
+        if (std::get<0>(ip) == 46 && std::get<1>(ip) == 70)
             std::cout << to_string(ip) << '\n';
+    });
 
-    // 3) хотя бы один байт == 46
-    for (const auto& ip : ips)
-        if (std::any_of(ip.begin(), ip.end(), [](int v){ return v == 46; }))
+    std::for_each(ips.begin(), ips.end(), [](const IP& ip){
+        if (std::get<0>(ip) == 46 || std::get<1>(ip) == 46 ||
+            std::get<2>(ip) == 46 || std::get<3>(ip) == 46)
             std::cout << to_string(ip) << '\n';
+    });
 
     return 0;
 }

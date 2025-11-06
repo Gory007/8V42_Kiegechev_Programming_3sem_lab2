@@ -26,7 +26,6 @@ configure_file(${CMAKE_SOURCE_DIR}/ip_filter.tsv ${CMAKE_CURRENT_BINARY_DIR}/ip_
 
 enable_testing()
 
-# Проверим, есть ли gtest (если нет — скачиваем автоматически)
 include(FetchContent)
 FetchContent_Declare(
   googletest
