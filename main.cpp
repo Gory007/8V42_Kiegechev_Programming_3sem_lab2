@@ -22,8 +22,6 @@ IP parse_ip(const std::string& s) {
 }
 
 int main() {
-    //std::ios::sync_with_stdio(false);
-    //std::cin.tie(nullptr);
 
     std::ifstream file("ip_filter.tsv");
     std::vector<IP> ips;
@@ -31,7 +29,7 @@ int main() {
 
     while (std::getline(file, line)) {
         if (line.empty()) continue;
-        if (!line.empty() && line.back() == '\r') line.pop_back();
+        if (!line.empty()) line.pop_back();
 
         ips.push_back(parse_ip(line.substr(0, line.find('\t'))));
     }
