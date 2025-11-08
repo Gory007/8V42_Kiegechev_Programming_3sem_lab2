@@ -31,13 +31,16 @@ FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/refs/heads/main.zip
 )
+
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 add_executable(test_ip_filter tests/test_ip_filter.cpp)
-target_link_libraries(test_ip_filter GTest::gtest_main)
+target_link_libraries(test_ip_filter gtest gtest_main)
 
-include(GoogleTest)
-gtest_discover_tests(test_ip_filter)
+enable_testing()
+add_test(NAME test_ip_filter COMMAND test_ip_filter)
+
 
 target_include_directories(lab2 PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 

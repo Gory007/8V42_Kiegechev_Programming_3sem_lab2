@@ -22,8 +22,8 @@ IP parse_ip(const std::string& s) {
 }
 
 int main() {
-    std::ios::sync_with_stdio(false);
-    std::cin.tie(nullptr);
+    //std::ios::sync_with_stdio(false);
+    //std::cin.tie(nullptr);
 
     std::ifstream file("ip_filter.tsv");
     std::vector<IP> ips;
